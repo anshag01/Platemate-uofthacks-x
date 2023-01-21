@@ -2,17 +2,20 @@ import Container from "../components/ui/Container"
 import Header from "../components/ui/Header"
 import Button from "../components/ui/Button"
 import Input from "../components/ui/Input"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 const Signup = () => {
+  const navigate = useNavigate()
+
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    const email = e.target.email.value
+    // const email = e.target.email.value
     const username = e.target.username.value
     const password = e.target.password.value
 
-    console.log(email, username, password)
+    console.log(username, password)
+    navigate("/userinfo")
   }
 
   return (
@@ -21,7 +24,7 @@ const Signup = () => {
         <Header text="Sign Up" />
 
         {/* Form */}
-        <Input placeholder="Email" name="email" type="email" required />
+        {/* <Input placeholder="Email" name="email" type="email" required /> */}
         <Input
           placeholder="Username"
           name="username"
