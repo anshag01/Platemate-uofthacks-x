@@ -1,5 +1,9 @@
 const Container = (props) => {
-  return <div className="w-full h-full max-w-lg">{props.children}</div>
+  return (
+    <div className={"w-full h-full p-8 " + props.className}>
+      {props.children}
+    </div>
+  )
 }
 
 export default Container
