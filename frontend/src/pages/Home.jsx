@@ -5,11 +5,13 @@ import MyComponent from "../components/Map"
 
 const Home = () => {
   return (
-    <Container className="flex flex-col gap-y-8">
-      <Header text="Where To?" />
-      <Input type="search" placeholder="Enter a location" />
+    <>
+      <Container className="flex flex-col gap-y-8">
+        <Header text="Where To?" />
+        <Input type="search" placeholder="Enter a location" />
+      </Container>
       <MyComponent />
-    </Container>
+    </>
   )
 }
 
