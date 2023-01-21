@@ -3,6 +3,7 @@ var getFirestore = require("firebase/firestore").getFirestore
 var collection = require("firebase/firestore").collection
 var addDoc = require("firebase/firestore").addDoc
 var getDoc = require("firebase/firestore").getDoc
+var doc = require("firebase/firestore").doc
 
 var express = require("express")
 var cors = require("cors")
@@ -64,7 +65,7 @@ app.get("/getPlaceDetails", (req, res, next) => {
 
 // COHERE
 
-app.post("/signUp", async (req, res, next) => {
+app.post("/signup", async (req, res, next) => {
   const cohereResult = cohereKeywordExtractor.extract(req.body.bio)
   const docRef = await addDoc(collection(db, "users"), {
     username: req.body.username,
@@ -79,7 +80,7 @@ app.post("/signUp", async (req, res, next) => {
   res.send(docRef.id)
 })
 
-app.get("/logIn", async (req, res, next) => {
+app.post("/login", async (req, res, next) => {
   const docRef = doc(db, "users", req.body.username)
   const docSnap = await getDoc(docRef)
   if (docSnap.exists()) {
@@ -107,6 +108,10 @@ app.post("/explainMatch", (req, res, next) => {
     .explain(matchPrompt)
     .then((result) => console.log(result))
     .catch((err) => next(err))
+})
+
+app.listen(8000, () => {
+  console.log("Server running on port 8000")
 })
 
 module.exports = app
