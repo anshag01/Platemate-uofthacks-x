@@ -1,8 +1,12 @@
+import Container from "../components/ui/Container"
+import Header from "../components/ui/Header"
+
 const Home = () => {
   return (
-    <div className="">
-      <h1>Hlell</h1>
-    </div>
+    <Container>
+      <Header text="Home" />
+      <button className="btn">Hello</button>
+    </Container>
   )
 }
 
