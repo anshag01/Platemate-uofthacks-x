@@ -5,7 +5,7 @@ import Home from "./pages/Home"
 import Login from "./pages/Login"
 import Recommended from "./pages/Recommended"
 import Signup from "./pages/Signup"
-import WhereTo from "./pages/WhereTo"
+import Profile from "./pages/Profile"
 
 const App = () => {
   return (
@@ -13,11 +13,11 @@ const App = () => {
       <Navbar />
       <Wrapper apiKey={"AIzaSyBidOMsX0DzROn3v29TBS_z1t40gxC0rM4"}>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/log-in" element={<Login />} />
-          <Route path="/sign-up" element={<Signup />} />
-          <Route path="/where-to" element={<WhereTo />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           <Route path="/recommended" element={<Recommended />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </Wrapper>
     </>
