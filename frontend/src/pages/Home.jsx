@@ -4,10 +4,9 @@ import Input from '../components/ui/Input';
 
 const Home = () => {
     return (
-        <Container>
-            <Header text="Home" />
-            <button className="btn">Hello</button>
-            <Input type="email" placeholder="Please enter an email."></Input>
+        <Container className="flex flex-col gap-y-8">
+            <Header text="Where To?" />
+            <Input type="search" placeholder="Enter a location" />
         </Container>
     );
 };
