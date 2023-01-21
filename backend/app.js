@@ -1,41 +1,47 @@
-var createError = require('http-errors');
 var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var cors = require('cors');
+var axios = require('axios');
+require('dotenv').config();
+const https = require('follow-redirects').https;
+const fs = require('fs');
 
 var app = express();
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
-
-app.use(logger('dev'));
+app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+// app.post('/addNewUser', (req, res, next) => {
+//   axios({
+//     method: 'post',
+//     url: 'https://api.estuary.tech/content/add',
+//     headers: {
+//       'Content-Type': 'multipart/form-data',
+//       'Accept': 'application/json',
+//       'Authorization': `Bearer ${process.env.ESTUARY_API_KEY}`
+//     },
+//     data: {},
+//     maxRedirects: 20
+//   });
+// });
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+async function findPlaceFromText(address) {
+  // let data;
+  const res = await axios.get(`https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${address}&inputtype=textquery&fields=geometry&key=${process.env.GOOGLE_MAPS_API_KEY}`)
+  const data = res.data;
+  return data.candidates[0].geometry.location;
+}
+
+app.get('/findNearbyRestaurants', async (req, res, next) => {
+  const data = await findPlaceFromText(req.body.address);
+  axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${data.lat},${data.lng}&radius=${req.body.radius}&type=restaurant&maxprice=${req.body.budget}&rankby=prominence&key=${process.env.GOOGLE_MAPS_API_KEY}`)
+    .then(restaurantsData => console.log(restaurantsData.data))
+    .catch(err => next(err));
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+app.get('/getPlaceDetails', (req, res, next) => {
+  axios.get(`https://maps.googleapis.com/maps/api/place/details/json?fields=name,editorial_summary,rating,price_level,formatted_address,opening_hours&place_id=ChIJN1t_tDeuEmsRUsoyG83frY4&key=${process.env.GOOGLE_MAPS_API_KEY}`)
+    .then(placeData => console.log(placeData.data))
+    .catch(err => next(err));
 });
 
 module.exports = app;
