@@ -27,10 +27,14 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
 
-// COHERE CONFIG
+// UTILS
 
 const CohereExtractor = require('./cohereExtractor.js');
 const CohereExplainer = require('./cohereExplainer.js');
+const getUserInfo = require('./src/utils/getUserInfo.js');
+
+// HANDLERS
+
 const {
     default: nearbyRestaurantsHandler
 } = require('./src/handlers/nearbyRestaurantsHandler.js');
@@ -43,8 +47,8 @@ const {
     default: explainMatchHandler
 } = require('./src/handlers/explainMatchHandler.js');
 
-const cohereKeywordExtractor = new CohereExtractor();
-const cohereMatchExplainer = new CohereExplainer();
+// const cohereKeywordExtractor = new CohereExtractor();
+// const cohereMatchExplainer = new CohereExplainer();
 
 // GOOGLE MAPS
 
@@ -63,12 +67,6 @@ app.get('/getPlaceDetails', placeDetailsHandler);
 app.post('/signUp', signUpHandler);
 
 app.get('/logIn', loginHandler);
-
-// async function getUserInfo(uuid) {
-//   const res = await axios.get('FIREBASE API');
-//   const data = res.data;
-//   return data;
-// }
 
 app.post('/explainMatch', explainMatchHandler);
 

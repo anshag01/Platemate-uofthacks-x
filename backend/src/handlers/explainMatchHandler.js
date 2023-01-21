@@ -1,9 +1,10 @@
-export default explainMatchHandler = (req, res, next) => {
-    const { userJob, userInterest } = getUserInfo(req.body.userUuid);
-    const { matchJob, matchInterest } = getUserInfo(req.body.matchUuid);
-    const matchPrompt = `I am a ${userJob} who enjoys ${userInterest}. Briefly explain why I should eat dinner with a ${matchJob} who likes ${matchInterest}.`;
+export default explainMatchHandler = (userId, matchId) => {
+    const user = getUserInfo(userId);
+    const match = getUserInfo(matchId);
+    const matchUser = { user.name, user.cuisine, user.interests[0], user.interests[1], user.interests[2], user.job };
+    const matchMatch = { match.name, match.cuisine, match.interests[0], match.interests[1], match.interests[2], match.job };
     cohereMatchExplainer
-        .explain(matchPrompt)
+        .explain(matchUser, matchMatch)
         .then((result) => console.log(result))
         .catch((err) => next(err));
 };
