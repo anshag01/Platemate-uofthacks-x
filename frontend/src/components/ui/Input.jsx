@@ -4,7 +4,7 @@ const Input = (props) => {
     return (
         <input
             type={type}
-            className="outline-0 py-3 px-2 w-full bg-[#E8E8E8] rounded-lg"
+            className="outline-0 py-3 px-2 w-full bg-[#E8E8E8] rounded-lg hover:border-[#E8E8E8]"
             placeholder={placeholder}
         />
     );
