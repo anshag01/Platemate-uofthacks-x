@@ -6,19 +6,22 @@ import Recommended from "./pages/Recommended"
 import Signup from "./pages/Signup"
 import Profile from "./pages/Profile"
 import UserInfo from "./pages/UserInfo"
+import AuthContextProvider from "./context/AuthContext"
 
 const App = () => {
   return (
     <>
       <Navbar />
-      <Routes>
-        <Route path="/home" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/recommended" element={<Recommended />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/userinfo" element={<UserInfo />} />
-      </Routes>
+      <AuthContextProvider>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/recommended" element={<Recommended />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/userinfo" element={<UserInfo />} />
+        </Routes>
+      </AuthContextProvider>
     </>
   )
 }

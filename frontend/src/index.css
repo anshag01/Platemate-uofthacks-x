@@ -1,3 +1,39 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.pac-container {
+    background-color: transparent;
+    box-shadow: none;
+}
+
+.pac-container::after {
+    display: none;
+}
+
+.pac-container > .pac-item {
+    width: 100%;
+    z-index: 10;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 100ms;
+    outline-width: 0px;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    --tw-bg-opacity: 1;
+    background-color: rgb(232 232 232 / var(--tw-bg-opacity));
+    border-color: transparent;
+    border-width: 2px;
+    border-radius: 0.5rem;
+    /* margin-bottom: 0.5rem; */
+    margin-top: 0.5rem;
+    cursor: pointer;
+}
+
+.pac-container > .pac-item:hover {
+    background-color: #c8c7c7;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 100ms;
+}

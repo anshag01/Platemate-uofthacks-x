@@ -1,51 +1,89 @@
+var initializeApp = require('firebase/app').initializeApp;
+var getFirestore = require('firebase/firestore').getFirestore;
+var collection = require('firebase/firestore').collection;
+var addDoc = require('firebase/firestore').addDoc;
+var getDoc = require('firebase/firestore').getDoc;
+
 var express = require('express');
 var cors = require('cors');
 var axios = require('axios');
 require('dotenv').config();
 
-const CohereExtractor = require('./cohere.js');
-
 var app = express();
-
 app.use(cors());
 app.use(express.json());
+
+// FIREBASE CONFIG
+
+const firebaseConfig = {
+    apiKey: 'AIzaSyBidOMsX0DzROn3v29TBS_z1t40gxC0rM4',
+    authDomain: 'uofthacks-x-375407.firebaseapp.com',
+    projectId: 'uofthacks-x-375407',
+    storageBucket: 'uofthacks-x-375407.appspot.com',
+    messagingSenderId: '834263756036',
+    appId: '1:834263756036:web:488d4b17bc6b71c44d3451',
+    measurementId: 'G-8REC5KN4LD'
+};
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getFirestore(firebaseApp);
+
+// UTILS
+
+const CohereExtractor = require('./cohereExtractor.js');
+const CohereExplainer = require('./cohereExplainer.js');
+const getUserInfo = require('./src/utils/getUserInfo.js');
+
+// HANDLERS
+
+const {
+    default: nearbyRestaurantsHandler
+} = require('./src/handlers/nearbyRestaurantsHandler.js');
+const {
+    default: placeDetailsHandler
+} = require('./src/handlers/placeDetailsHandler.js');
+const { default: signUpHandler } = require('./src/handlers/signUpHandler.js');
+const { default: loginHandler } = require('./src/handlers/loginHandler.js');
+const {
+    default: explainMatchHandler
+} = require('./src/handlers/explainMatchHandler.js');
+
+// const cohereKeywordExtractor = new CohereExtractor();
+// const cohereMatchExplainer = new CohereExplainer();
 
 // GOOGLE MAPS
 
 // async function findPlaceFromText(address) {
-//   const res = await axios.get(`https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${address}&inputtype=textquery&fields=geometry&key=${process.env.GOOGLE_MAPS_API_KEY}`)
+//   const res = await axios.get(`https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${address}&inputtype=textquery&fields=geometry&key=${process.env.GOOGLE_MAPS_API_KEY}`);
 //   const data = res.data;
 //   return data.candidates[0].geometry.location;
 // }
 
-app.get('/findNearbyRestaurants', async (req, res, next) => {
-  // const data = await findPlaceFromText(req.body.address);
-  axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${req.body.lat},${req.body.lng}&radius=${req.body.radius}&type=restaurant&maxprice=${req.body.budget}&rankby=prominence&key=${process.env.GOOGLE_MAPS_API_KEY}`)
-    .then(restaurantsData => console.log(restaurantsData.data))
-    .catch(err => next(err));
-});
+app.get('/findNearbyRestaurants', nearbyRestaurantsHandler);
 
-app.get('/getPlaceDetails', (req, res, next) => {
-  axios.get(`https://maps.googleapis.com/maps/api/place/details/json?fields=name,editorial_summary,rating,price_level,formatted_address,opening_hours&place_id=ChIJN1t_tDeuEmsRUsoyG83frY4&key=${process.env.GOOGLE_MAPS_API_KEY}`)
-    .then(placeData => console.log(placeData.data))
-    .catch(err => next(err));
-});
+app.get('/getPlaceDetails', placeDetailsHandler);
 
 // COHERE
 
-const bioExamples = ["Hello! I'm Mimi and I love to eat good food. I'm always up for trying new restaurants and cuisines, and I love to meet new people who share my passion for food. I'm looking forward to exploring my city and trying all the best dishes it has to offer. My favourite cuisine is definitely Japanese, and my favourite food is ramen. I'm always up for a good bowl of ramen, no matter what time of day it is.", "Hello, my name is John and I am a big fan of Mexican cuisine. My favourite food is barbacoa. I am looking forward to meeting new people and trying new foods.", "Hello! I'm Mary and I love to eat good food. I'm always up for trying new restaurants and cuisines, and I love to meet new people who share my passion for food. My favourite cuisine is Thai and my favourite food is Som Tam."];
-const bioExampleLabels = ["Japanese", "Mexican", "Thai"];
-const cohereKeywordExtractor = new CohereExtractor(bioExamples, bioExampleLabels, [], "", "extract the favourite cuisine from the bio:")
+app.post('/signup', signUpHandler);
 
-const testBio = "Hello! I'm Sam and I love food. I'm always up for trying new restaurants and cuisines, and I love to cook too. My favourite cuisine is definitely Italian, and my favourite food is pizza.";
-const testBio2 = "Hello, I'm Joe and I love food! I'm always up for trying new restaurants and cuisines. My favourite cuisine is definitely Mexican, and my favourite food is definitely tacos!";
-const testBio3 = "Hello, my name is John and I am a big fan of Thai food. My favorite dish is definitely green curry with chicken. I am always up for trying new restaurants and cuisines, so if you have any recommendations, I would love to hear them!";
+app.get('/logIn', async (req, res, next) => {
+    const docRef = doc(db, 'users', req.body.username);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+        if (req.body.password === docSnap.data().password) {
+            res.send(docRef.id);
+        } else {
+            console.log('Incorrect password.');
+        }
+    } else {
+        console.log('No such document!');
+    }
+});
 
-cohereKeywordExtractor.extract(testBio)
-  .then(result => console.log(result));
-cohereKeywordExtractor.extract(testBio2)
-  .then(result => console.log(result));
-cohereKeywordExtractor.extract(testBio3)
-  .then(result => console.log(result));
+app.post('/explainMatch', explainMatchHandler);
+
+app.listen(8000, () => {
+    console.log('Server running on port 8000');
+});
 
 module.exports = app;
