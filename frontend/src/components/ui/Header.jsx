@@ -1,5 +1,11 @@
-const Header = ({ text }) => {
-  return <h1 className="text-red-500 font-bold text-2xl text-center">{text}</h1>
+const Header = (props) => {
+  return (
+    <h1
+      className={"text-black font-bold text-2xl text-center " + props.className}
+    >
+      {props.text}
+    </h1>
+  )
 }
 
 export default Header
