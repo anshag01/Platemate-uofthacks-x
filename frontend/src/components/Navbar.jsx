@@ -19,8 +19,8 @@ const Navbar = () => {
         boxShadow: "0px 20px 100px rgba(0, 0, 0, 0.25)",
       }}
     >
-      <Link to="/home">
-        {location.pathname === "/home" ? <ColorMail /> : <BlackMail />}
+      <Link to="/">
+        {location.pathname === "/" ? <ColorMail /> : <BlackMail />}
       </Link>
       <Link to="/recommended">
         {location.pathname === "/recommended" ? (

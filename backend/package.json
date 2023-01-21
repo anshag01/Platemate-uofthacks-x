@@ -9,6 +9,7 @@
     "axios": "^1.2.3",
     "cohere-ai": "^5.0.2",
     "cookie-parser": "~1.4.4",
+    "cors": "^2.8.5",
     "debug": "~2.6.9",
     "dotenv": "^16.0.3",
     "express": "~4.16.1",
