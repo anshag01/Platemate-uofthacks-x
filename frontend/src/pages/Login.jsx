@@ -14,6 +14,9 @@ const Login = () => {
     const password = e.target.password.value
 
     console.log(username, password)
+    localStorage.setItem("username", username)
+    localStorage.setItem("password", password)
+
     navigate("/home")
   }
 

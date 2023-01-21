@@ -8,11 +8,11 @@ const Signup = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    const name = e.target.name.value
+    const email = e.target.email.value
     const username = e.target.username.value
     const password = e.target.password.value
 
-    console.log(name, username, password)
+    console.log(email, username, password)
   }
 
   return (
@@ -21,7 +21,7 @@ const Signup = () => {
         <Header text="Sign Up" />
 
         {/* Form */}
-        <Input placeholder="Name" name="name" type="name" required />
+        <Input placeholder="Email" name="email" type="email" required />
         <Input
           placeholder="Username"
           name="username"
