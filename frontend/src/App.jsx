@@ -11,7 +11,7 @@ const App = () => {
   return (
     <>
       <Navbar />
-      <Wrapper apiKey={"AIzaSyBidOMsX0DzROn3v29TBS_z1t40gxC0rM4"}>
+      <Wrapper apiKey={process.env.REACT_APP_GOOGLE_API_KEY}>
         <Routes>
           <Route path="/home" element={<Home />} />
           <Route path="/login" element={<Login />} />
