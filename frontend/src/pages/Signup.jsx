@@ -3,6 +3,7 @@ import Header from "../components/ui/Header"
 import Button from "../components/ui/Button"
 import Input from "../components/ui/Input"
 import { Link } from "react-router-dom"
+import Logo from "../components/ui/Logo"
 
 const Signup = () => {
   const handleSubmit = (e) => {
@@ -17,8 +18,8 @@ const Signup = () => {
 
   return (
     <Container>
-      <form className="flex flex-col gap-y-8" onSubmit={handleSubmit}>
-        <Header text="Sign Up" />
+      <form className="flex flex-col items-center gap-y-8" onSubmit={handleSubmit}>
+      <Logo />
 
         {/* Form */}
         <Input placeholder="Name" name="name" type="name" required />

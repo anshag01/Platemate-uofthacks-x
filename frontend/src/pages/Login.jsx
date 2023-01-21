@@ -1,8 +1,8 @@
 import Container from "../components/ui/Container"
-import Header from "../components/ui/Header"
 import Button from "../components/ui/Button"
 import Input from "../components/ui/Input"
 import { Link, useNavigate } from "react-router-dom"
+import Logo from "../components/ui/Logo"
 
 const Login = () => {
   const navigate = useNavigate()
@@ -19,8 +19,8 @@ const Login = () => {
 
   return (
     <Container>
-      <form className="flex flex-col gap-y-8" onSubmit={handleSubmit}>
-        <Header text="Log In" />
+      <form className="flex flex-col items-center gap-y-8" onSubmit={handleSubmit}>
+        <Logo />
 
         {/* Form */}
         <Input
