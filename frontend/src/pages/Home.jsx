@@ -9,9 +9,9 @@ import { reverseGeocode } from '../utils/reverseGeocode';
 const Home = () => {
     useEffect(() => {
         navigator.geolocation.getCurrentPosition((position) => {
-            console.log(position);
+            console.log('position', position);
             const { longitude, latitude } = position.coords;
-            const formattedAddress = reverseGeocode(longitude, latitude);
+            const formattedAddress = reverseGeocode(latitude, longitude);
             console.log('formatted address', formattedAddress);
         });
     }, []);
