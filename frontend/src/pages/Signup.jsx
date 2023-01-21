@@ -5,19 +5,41 @@ import Input from "../components/ui/Input"
 import { Link } from "react-router-dom"
 
 const Signup = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault()
+
+    const name = e.target.name.value
+    const username = e.target.username.value
+    const password = e.target.password.value
+
+    console.log(name, username, password)
+  }
+
   return (
-    <Container className="flex flex-col gap-y-8">
-      <Header text="Sign Up" />
+    <Container>
+      <form className="flex flex-col gap-y-8" onSubmit={handleSubmit}>
+        <Header text="Sign Up" />
 
-      {/* Form */}
-      <Input placeholder="Name" />
-      <Input placeholder="Username" />
-      <Input placeholder="Password" />
+        {/* Form */}
+        <Input placeholder="Name" name="name" type="name" required />
+        <Input
+          placeholder="Username"
+          name="username"
+          type="username"
+          required
+        />
+        <Input
+          placeholder="Password"
+          name="password"
+          type="password"
+          required
+        />
 
-      <Button text="Sign Up" />
-      <Link className="text-[#DF72E1] hover:text-[#a04ea2] hover:ease-in-out duration-100 text-center">
-        Forgot your password?
-      </Link>
+        <Button text="Sign Up" type="submit" />
+        <Link className="text-[#DF72E1] hover:text-[#a04ea2] hover:ease-in-out duration-100 text-center">
+          Forgot your password?
+        </Link>
+      </form>
     </Container>
   )
 }
