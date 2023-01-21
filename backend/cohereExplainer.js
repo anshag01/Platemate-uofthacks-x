@@ -4,7 +4,7 @@ cohere.init('UX06Mr70hZIdSCOhHml4vGeljYJwH2UeUgKaon0I');
 class CohereExplainer {
   async explain(matchPrompt) {
     const explanation = await cohere.generate({
-      model: 'command-medium-nightly',
+      model: 'medium',
       prompt: matchPrompt,
       max_tokens: 75,
       temperature: 1.4,
