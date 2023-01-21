@@ -64,10 +64,26 @@ app.get('/getPlaceDetails', placeDetailsHandler);
 
 // COHERE
 
-app.post('/signUp', signUpHandler);
+app.post('/signup', signUpHandler);
 
-app.get('/logIn', loginHandler);
+app.get('/logIn', async (req, res, next) => {
+    const docRef = doc(db, 'users', req.body.username);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+        if (req.body.password === docSnap.data().password) {
+            res.send(docRef.id);
+        } else {
+            console.log('Incorrect password.');
+        }
+    } else {
+        console.log('No such document!');
+    }
+});
 
 app.post('/explainMatch', explainMatchHandler);
+
+app.listen(8000, () => {
+    console.log('Server running on port 8000');
+});
 
 module.exports = app;

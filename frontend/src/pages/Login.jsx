@@ -3,9 +3,12 @@ import Header from "../components/ui/Header"
 import Button from "../components/ui/Button"
 import Input from "../components/ui/Input"
 import { Link, useNavigate } from "react-router-dom"
+import { useContext } from "react"
+import { AuthContext } from "../context/AuthContext"
 
 const Login = () => {
   const navigate = useNavigate()
+  const { login } = useContext(AuthContext)
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -13,11 +16,11 @@ const Login = () => {
     const username = e.target.username.value
     const password = e.target.password.value
 
-    console.log(username, password)
+    login(username, password)
     localStorage.setItem("username", username)
     localStorage.setItem("password", password)
 
-    navigate("/home")
+    // navigate("/")
   }
 
   return (

@@ -10,8 +10,6 @@ const AuthContextProvider = (props) => {
 
   // User authentication info
   const [user, setUser] = useState()
-  // Access and refresh tokens
-  const [tokens, setTokens] = useState()
 
   // Login
   const login = async (username, password) => {
@@ -21,9 +19,8 @@ const AuthContextProvider = (props) => {
         password,
       }
 
-      const res = await axios.post("/token/", context)
+      const res = await axios.post("http://localhost:8000/login", context)
       if (res.status === 200) {
-        // Save tokens to local storage
         const uuid = res.data
         console.log(uuid)
         localStorage.setItem("user", JSON.stringify(uuid))
@@ -38,7 +35,6 @@ const AuthContextProvider = (props) => {
 
   // Logout
   const logout = async () => {
-    // Save tokens to local storage
     localStorage.removeItem("user")
 
     // Going home
@@ -52,7 +48,7 @@ const AuthContextProvider = (props) => {
         username,
         password,
       }
-      const res = await axios.post("/signUp/", context)
+      const res = await axios.post("/signup/", context)
       if (res.status === 200) {
         // Going home
         navigate("/login")
@@ -64,9 +60,7 @@ const AuthContextProvider = (props) => {
 
   const value = {
     user,
-    tokens,
     setUser,
-    setTokens,
     login,
     logout,
     signup,
