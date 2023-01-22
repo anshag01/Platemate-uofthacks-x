@@ -26,6 +26,7 @@ const firebaseConfig = {
 };
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
+module.export = db;
 
 // UTILS
 
