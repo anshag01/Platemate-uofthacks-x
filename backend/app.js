@@ -2,7 +2,6 @@ var initializeApp = require('firebase/app').initializeApp;
 var getFirestore = require('firebase/firestore').getFirestore;
 var collection = require('firebase/firestore').collection;
 var doc = require('firebase/firestore').doc;
-var addDoc = require('firebase/firestore').addDoc;
 var getDoc = require('firebase/firestore').getDoc;
 var doc = require('firebase/firestore').doc;
 
@@ -42,12 +41,24 @@ const getUserInfo = require('./getUserInfo.js');
 // GOOGLE MAPS
 
 app.get('/findNearbyRestaurants', async (req, res, next) => {
-    axios
-        .get(
-            `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${req.body.lat},${req.body.lng}&radius=1000&type=restaurant&maxprice=${req.body.budget}&rankby=prominence&key=${process.env.GOOGLE_MAPS_API_KEY}`
+    const restaurantsData = await axios.get(
+        `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${req.body.lat},${req.body.lng}&radius=1000&type=restaurant&maxprice=${req.body.budget}&rankby=prominence&key=${process.env.GOOGLE_MAPS_API_KEY}`
+    );
+    const results = [];
+    for (let i = 0; i < 5; i++) {
+        const { geometry, name, photos, price_level, rating, vicinity } = restaurantsData.data.results[i];
+        results.push(
+            {
+                lat: geometry.location.lat,
+                lng: geometry.location.lng,
+                name: name,
+                photos: photos,
+                price_level: price_level,
+                rating: rating,
+                address: vicinity
+            }
         )
-        .then((restaurantsData) => res.send(restaurantsData))
-        .catch((err) => next(err));
+    }
 });
 
 app.get('/getPlaceDetails', (req, res, next) => {
