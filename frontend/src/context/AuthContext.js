@@ -24,8 +24,9 @@ const AuthContextProvider = (props) => {
                 context
             );
             if (res.status === 200) {
-                const uuid = res.data;
-                localStorage.setItem('user', JSON.stringify(uuid));
+                const data = res.data;
+                console.log(data);
+                localStorage.setItem('user', JSON.stringify(data));
 
                 // Going home
                 navigate('/');
@@ -51,7 +52,7 @@ const AuthContextProvider = (props) => {
                 password
             };
             const res = await axios.post(
-                'http://localhost:3000/signup/',
+                'http://localhost:8000/signup/',
                 context
             );
             if (res.status === 200) {

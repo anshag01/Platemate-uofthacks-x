@@ -81,7 +81,7 @@ app.post('/signup', async (req, res, next) => {
     res.send(docRef.id);
 });
 
-app.get('/logIn', async (req, res, next) => {
+app.post('/login', async (req, res, next) => {
     const docRef = doc(db, 'users', req.body.username);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
