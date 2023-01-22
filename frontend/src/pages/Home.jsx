@@ -7,8 +7,9 @@ import Autocomplete from 'react-google-autocomplete';
 import { reverseGeocode } from '../utils/reverseGeocode';
 import RestaurantCard from '../components/ui/RestaurantCard';
 import axios from 'axios';
-import { waitForMatch } from '../utils/waitForMatch';
 import { AuthContext } from '../context/AuthContext';
+
+const delay = 3000;
 
 const getRestaurantList = async ({ lat, lng }) => {
     console.log(lat, lng);
@@ -20,11 +21,53 @@ const getRestaurantList = async ({ lat, lng }) => {
     return response.data;
 };
 
+const sendRequest = async (status, userId, locationId) => {
+    const response = await axios.post('http://localhost:4000/match', {
+        status: status,
+        userId: userId,
+        locationId: locationId
+    });
+
+    return response.data;
+};
+
+const waitForMatch = async (callback, userId, locationId) => {
+    const startData = await sendRequest('start', userId, locationId);
+
+    if (startData.status === 'match') {
+        callback(startData.matchingUserId);
+        return;
+    }
+
+    return new Promise(async (resolve) => {
+        setInterval(async () => {
+            const pollData = await sendRequest('poll', userId, locationId);
+            // eslint-disable-next-line default-case
+            switch (pollData.status) {
+                case 'match':
+                    callback(pollData.matchingUserId);
+                    resolve();
+                    break;
+                case 'active':
+                    console.log('match not yet found');
+                    break;
+            }
+        }, delay);
+    });
+};
+
 const Home = () => {
     const [placeholder, setPlaceholder] = useState('');
     const [center, setCenter] = useState(null);
 
     const { user } = useContext(AuthContext);
+    useEffect(() => {
+        return async () => {
+            await axios.post('http://localhost:4000/match', {
+                status: 'stop'
+            });
+        };
+    });
 
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(async (position) => {
@@ -40,10 +83,10 @@ const Home = () => {
     const [match, setMatch] = useState(null);
 
     const handlePlaceSelected = async (place) => {
-        console.log('selected place: ', place.geometry.location);
+        console.log('selected place: ', place);
         const { lat, lng } = place.geometry.location;
-        // start the matchmaking process
-        waitForMatch();
+        const locationId = place.place_id;
+        await waitForMatch(() => {}, user, locationId);
 
         const restaurantList = await getRestaurantList({ lat, lng });
         // display the resataurant list gievn the components
