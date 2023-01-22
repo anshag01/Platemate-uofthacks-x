@@ -138,11 +138,19 @@ const Home = () => {
         setCenter(place.geometry.location);
 
         await waitForMatch(
-            (matchingUser) => {
+            async (matchingUser) => {
+                const explainMatch = await axios.post(
+                    'http://localhost:4000/explainMatch',
+                    {
+                        userId: user,
+                        matchId: matchingUser
+                    }
+                );
+
                 setMatch(
                     <Card
                         pic={person1}
-                        title="Amy Roberts"
+                        title={matchingUser}
                         address="kazi Deiry, Taiger Pass Chittagong"
                     />
                 );

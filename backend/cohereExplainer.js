@@ -23,7 +23,7 @@ class CohereExplainer {
             p: 0.75,
             frequency_penalty: 0,
             presence_penalty: 0,
-            stop_sequences: []
+            stop_sequences: ['--']
         });
         const temp = explanation.body.generations[0].text;
         return temp.substring(0, temp.length - 2);
