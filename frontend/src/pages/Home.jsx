@@ -115,6 +115,9 @@ const Home = () => {
     ]);
 
     const { user } = useContext(AuthContext);
+    const currentUser =
+        user || window.localStorage.getItem('user').replace(/['"]+/g, '');
+
     // useEffect(() => {
     //     return async () => {
     //         await axios.post('http://localhost:4000/match', {
@@ -164,14 +167,14 @@ const Home = () => {
                         className="absolute top-[60%]"
                         onClick={() =>
                             navigate(
-                                `/match?userId=${user}&matchId=${matchingUser}`
+                                `/match?userId=${currentUser}&matchId=${matchingUser}`
                             )
                         }
                     />
                 );
                 console.log('matched with user: ', matchingUser);
             },
-            user,
+            currentUser,
             locationId
         );
     };

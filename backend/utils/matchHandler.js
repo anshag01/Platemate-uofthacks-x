@@ -30,6 +30,7 @@ const matchHandler = (req, res) => {
             if (!sessionStore.hasOwnProperty(locationId)) {
                 res.status(400);
                 res.send('Error: locationId not present');
+                break;
             }
 
             if (sessionStore[locationId].length > 1) {
