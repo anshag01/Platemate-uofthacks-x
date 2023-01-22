@@ -162,7 +162,11 @@ const Home = () => {
                         address="kazi Deiry, Taiger Pass Chittagong"
                         text="Match"
                         className="absolute top-[60%]"
-                        onClick={() => navigate('/match')}
+                        onClick={() =>
+                            navigate(
+                                `/match?userId=${user}&matchId=${matchingUser}`
+                            )
+                        }
                     />
                 );
                 console.log('matched with user: ', matchingUser);
