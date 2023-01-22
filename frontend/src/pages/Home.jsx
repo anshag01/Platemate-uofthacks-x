@@ -6,6 +6,17 @@ import { useEffect } from 'react';
 import Autocomplete from 'react-google-autocomplete';
 import { reverseGeocode } from '../utils/reverseGeocode';
 import RestaurantCard from '../components/ui/RestaurantCard';
+import axios from 'axios';
+
+const getRestaurantList = async ({ lat, lng }) => {
+    console.log(lat, lng);
+    const response = await axios.post(
+        'http://localhost:3001/findNearbyRestaurants',
+        { lat: lat(), lng: lng() }
+    );
+
+    return response.data;
+};
 
 const Home = () => {
     const [placeholder, setPlaceholder] = useState('');
@@ -20,9 +31,13 @@ const Home = () => {
         });
     }, []);
 
-    const handlePlaceSelected = (place) => {
+    const handlePlaceSelected = async (place) => {
         console.log('selected place: ', place.geometry.location);
         const { lat, lng } = place.geometry.location;
+        // start the matchmaking process
+
+        const restaurantList = await getRestaurantList({ lat, lng });
+        // display the resataurant list gievn the components
 
         setCenter(place.geometry.location);
     };

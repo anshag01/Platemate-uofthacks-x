@@ -41,25 +41,38 @@ const getUserInfo = require('./getUserInfo.js');
 
 // GOOGLE MAPS
 
-app.get('/findNearbyRestaurants', async (req, res, next) => {
+app.post('/findNearbyRestaurants', async (req, res, next) => {
     const restaurantsData = await axios.get(
-        `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${req.body.lat},${req.body.lng}&radius=1000&type=restaurant&maxprice=${req.body.budget}&rankby=prominence&key=${process.env.GOOGLE_MAPS_API_KEY}`
+        `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${
+            req.body.lat
+        },${req.body.lng}&radius=1000&type=restaurant&maxprice=${
+            req.body.budget
+        }&rankby=prominence&key=${'AIzaSyBafwgKGnLCerwKxmHSlVRrQRbiSq4HM1s'}`
     );
+
+    console.log(restaurantsData);
+
+    const resultLength =
+        restaurantsData.data.results.length > 5
+            ? 5
+            : restaurantsData.data.results.length;
+
     const results = [];
-    for (let i = 0; i < 5; i++) {
-        const { geometry, name, photos, price_level, rating, vicinity } = restaurantsData.data.results[i];
-        results.push(
-            {
-                lat: geometry.location.lat,
-                lng: geometry.location.lng,
-                name: name,
-                photos: photos,
-                price_level: price_level,
-                rating: rating,
-                address: vicinity
-            }
-        )
+    for (let i = 0; i < resultLength; i++) {
+        console.log(restaurantsData.data.results[i]);
+        const { geometry, name, photos, price_level, rating, vicinity } =
+            restaurantsData.data.results[i];
+        results.push({
+            lat: geometry.location.lat,
+            lng: geometry.location.lng,
+            name: name,
+            photos: photos,
+            price_level: price_level,
+            rating: rating,
+            address: vicinity
+        });
     }
+    res.send(results);
 });
 
 app.get('/getPlaceDetails', (req, res, next) => {
@@ -129,7 +142,7 @@ app.post('/explainMatch', async (req, res, next) => {
         .catch((err) => next(err));
 });
 
-app.listen(8000, () => {
+app.listen(3001, () => {
     console.log('Server running on port 3000');
 });
 
