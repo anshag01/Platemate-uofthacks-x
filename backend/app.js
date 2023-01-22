@@ -51,8 +51,6 @@ app.post('/findNearbyRestaurants', async (req, res, next) => {
         }&rankby=prominence&key=${'AIzaSyBafwgKGnLCerwKxmHSlVRrQRbiSq4HM1s'}`
     );
 
-    console.log(restaurantsData);
-
     const resultLength =
         restaurantsData.data.results.length > 5
             ? 5
@@ -60,7 +58,6 @@ app.post('/findNearbyRestaurants', async (req, res, next) => {
 
     const results = [];
     for (let i = 0; i < resultLength; i++) {
-        console.log(restaurantsData.data.results[i]);
         const { geometry, name, photos, price_level, rating, vicinity } =
             restaurantsData.data.results[i];
         results.push({

@@ -18,12 +18,12 @@ const Profile = () => {
         <Container className="pb-32 pt-12">
             <Header text="Profile" />
 
-            <div className="h-full overflow-y-auto flex flex-col items-center gap-y-8">
+            <div className="w-full h-full overflow-y-auto flex flex-col items-center gap-y-8">
                 <ProfileCard>
                     <img
                         src="https://picsum.photos/200"
                         alt="pic1"
-                        className="w-20 h-20 rounded-full"
+                        className="w-14 h-14 md:w-20 md:h-20 rounded-full"
                     />
                     <div className="flex flex-col items-start">
                         <h1>Sadek Hossen</h1>
