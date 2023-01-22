@@ -29,6 +29,7 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
 module.exports = { db };
+
 // COHERE CONFIG
 
 const CohereExtractor = require('./cohereExtractor.js');
@@ -40,19 +41,12 @@ const getUserInfo = require('./getUserInfo.js');
 
 // GOOGLE MAPS
 
-// async function findPlaceFromText(address) {
-//   const res = await axios.get(`https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${address}&inputtype=textquery&fields=geometry&key=${process.env.GOOGLE_MAPS_API_KEY}`);
-//   const data = res.data;
-//   return data.candidates[0].geometry.location;
-// }
-
 app.get('/findNearbyRestaurants', async (req, res, next) => {
-    // const data = await findPlaceFromText(req.body.address);
     axios
         .get(
-            `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${req.body.lat},${req.body.lng}&radius=5000&type=restaurant&maxprice=${req.body.budget}&rankby=prominence&key=${process.env.GOOGLE_MAPS_API_KEY}`
+            `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${req.body.lat},${req.body.lng}&radius=1000&type=restaurant&maxprice=${req.body.budget}&rankby=prominence&key=${process.env.GOOGLE_MAPS_API_KEY}`
         )
-        .then((restaurantsData) => console.log(restaurantsData.data))
+        .then((restaurantsData) => res.send(restaurantsData))
         .catch((err) => next(err));
 });
 
@@ -61,7 +55,7 @@ app.get('/getPlaceDetails', (req, res, next) => {
         .get(
             `https://maps.googleapis.com/maps/api/place/details/json?fields=name,editorial_summary,rating,price_level,formatted_address,opening_hours&place_id=ChIJN1t_tDeuEmsRUsoyG83frY4&key=${process.env.GOOGLE_MAPS_API_KEY}`
         )
-        .then((placeData) => console.log(placeData.data))
+        .then((placeData) => res.send(placeData))
         .catch((err) => next(err));
 });
 
@@ -118,7 +112,7 @@ app.post('/explainMatch', async (req, res, next) => {
             matchInterest3,
             matchJob
         )
-        .then((result) => console.log(result))
+        .then((result) => res.send(result))
         .catch((err) => next(err));
 });
 
