@@ -2,7 +2,9 @@ import Button from './Button';
 
 const Card = (props) => {
     return (
-        <div className="w-[400px] p-2 flex md:flex-row flex-col items-center justify-center gap-y-4 md:gap-x-8 md:text-left text-center rounded-lg shadow-lg">
+        <div
+            className={`w-[400px] p-2 flex md:flex-row flex-col items-center justify-center gap-y-4 md:gap-x-8 md:text-left text-center rounded-lg shadow-lg ${props.className}`}
+        >
             <img
                 src={props.pic}
                 alt="pic1"

@@ -7,8 +7,11 @@ import Autocomplete from 'react-google-autocomplete';
 import { reverseGeocode } from '../utils/reverseGeocode';
 import RestaurantCard from '../components/ui/RestaurantCard';
 import axios from 'axios';
-import { waitForMatch } from '../utils/waitForMatch';
 import { AuthContext } from '../context/AuthContext';
+import person1 from '../assets/pics/person1.png';
+import Card from '../components/ui/Card';
+
+const delay = 3000;
 
 const getRestaurantList = async ({ lat, lng }) => {
     const response = await axios.post(
@@ -19,11 +22,54 @@ const getRestaurantList = async ({ lat, lng }) => {
     return response.data;
 };
 
+const sendRequest = async (status, userId, locationId) => {
+    const response = await axios.post('http://localhost:4000/match', {
+        status: status,
+        userId: userId,
+        locationId: locationId
+    });
+
+    return response.data;
+};
+
+const waitForMatch = async (callback, userId, locationId) => {
+    const startData = await sendRequest('start', userId, locationId);
+
+    if (startData.status === 'match') {
+        callback(startData.matchingUserId);
+        return;
+    }
+
+    return new Promise(async (resolve) => {
+        setInterval(async () => {
+            const pollData = await sendRequest('poll', userId, locationId);
+            // eslint-disable-next-line default-case
+            switch (pollData.status) {
+                case 'match':
+                    callback(pollData.matchingUserId);
+                    resolve();
+                    break;
+                case 'active':
+                    console.log('match not yet found');
+                    break;
+            }
+        }, delay);
+    });
+};
+
 const Home = () => {
     const [placeholder, setPlaceholder] = useState('');
     const [center, setCenter] = useState(null);
 
     const { user } = useContext(AuthContext);
+    // useEffect(() => {
+    //     return async () => {
+    //         await axios.post('http://localhost:4000/match', {
+    //             status: 'stop',
+    //             userId: user
+    //         });
+    //     };
+    // });
 
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(async (position) => {
@@ -34,14 +80,27 @@ const Home = () => {
         });
     }, []);
 
-    const [match, setMatch] = useState(null);
-    const [restaurantList, setRestaurantList] = useState();
+    const [match, setMatch] = useState(<></>);
 
     const handlePlaceSelected = async (place) => {
-        const lat = place.geometry.location.lat();
-        const lng = place.geometry.location.lng();
-        // start the matchmaking process
-        waitForMatch();
+        console.log('selected place: ', place);
+        const { lat, lng } = place.geometry.location;
+        const locationId = place.place_id;
+        await waitForMatch(
+            (matchingUser) => {
+                setMatch(
+                    <Card
+                        className="bg-white"
+                        pic={person1}
+                        title="Amy Roberts"
+                        address="kazi Deiry, Taiger Pass Chittagong"
+                    />
+                );
+                console.log('matched with user: ', matchingUser);
+            },
+            user,
+            locationId
+        );
 
         const res = await getRestaurantList({ lat, lng });
         setRestaurantList(res);
@@ -52,7 +111,6 @@ const Home = () => {
 
     return (
         <Container className="flex flex-col items-center gap-y-8">
-            <Header text="Where To?" />
             <Map center={center} />
             <Autocomplete
                 apiKey={'AIzaSyBafwgKGnLCerwKxmHSlVRrQRbiSq4HM1s'}
@@ -90,6 +148,7 @@ const Home = () => {
                             />
                         )
                 )} */}
+            {match}
         </Container>
     );
 };
