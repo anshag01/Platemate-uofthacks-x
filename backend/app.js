@@ -1,6 +1,7 @@
 var initializeApp = require('firebase/app').initializeApp;
 var getFirestore = require('firebase/firestore').getFirestore;
 var collection = require('firebase/firestore').collection;
+var doc = require('firebase/firestore').doc;
 var addDoc = require('firebase/firestore').addDoc;
 var getDoc = require('firebase/firestore').getDoc;
 var doc = require('firebase/firestore').doc;
@@ -68,8 +69,7 @@ app.get('/getPlaceDetails', (req, res, next) => {
 
 app.post('/signup', async (req, res, next) => {
     const cohereResult = cohereKeywordExtractor.extract(req.body.bio);
-    const docRef = await addDoc(collection(db, 'users'), {
-        username: req.body.username,
+    const docRef = await addDoc(collection(db, 'users', req.body.username), {
         password: req.body.password,
         name: cohereResult.data.name,
         budget: req.body.budget + req.body.goal,
@@ -81,8 +81,8 @@ app.post('/signup', async (req, res, next) => {
     res.send(docRef.id);
 });
 
-app.post('/login', async (req, res, next) => {
-    const docRef = doc(db, 'users', req.body.id);
+app.get('/logIn', async (req, res, next) => {
+    const docRef = doc(db, 'users', req.body.username);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
         if (req.body.password === docSnap.data().password) {
@@ -96,18 +96,28 @@ app.post('/login', async (req, res, next) => {
     }
 });
 
-// async function getUserInfo(uuid) {
-//   const res = await axios.get('FIREBASE API');
-//   const data = res.data;
-//   return data;
-// }
-
-app.post('/explainMatch', (req, res, next) => {
-    const { userJob, userInterest } = getUserInfo(req.body.userUuid);
-    const { matchJob, matchInterest } = getUserInfo(req.body.matchUuid);
-    const matchPrompt = `I am a ${userJob} who enjoys ${userInterest}. Briefly explain why I should eat dinner with a ${matchJob} who likes ${matchInterest}.`;
+app.post('/explainMatch', async (req, res, next) => {
+    const user = await getUserInfo(db, req.body.userId);
+    const match = await getUserInfo(db, req.body.matchId);
+    const { userName, userCuisine, userInterests, userJob } = user.data;
+    const [userInterest1, userInterest2, userInterest3] = userInterests;
+    const { matchName, matchCuisine, matchInterests, matchJob } = match.data;
+    const [matchInterest1, matchInterest2, matchInterest3] = matchInterests;
     cohereMatchExplainer
-        .explain(matchPrompt)
+        .explain(
+            userName,
+            userCuisine,
+            userInterest1,
+            userInterest2,
+            userInterest3,
+            userJob,
+            matchName,
+            matchCuisine,
+            matchInterest1,
+            matchInterest2,
+            matchInterest3,
+            matchJob
+        )
         .then((result) => console.log(result))
         .catch((err) => next(err));
 });
