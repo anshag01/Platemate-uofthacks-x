@@ -142,8 +142,8 @@ app.post('/explainMatch', async (req, res, next) => {
         .catch((err) => next(err));
 });
 
-app.listen(3001, () => {
-    console.log('Server running on port 3000');
+app.listen(4000, () => {
+    console.log('Server running on port 4000');
 });
 
 module.exports = app;
