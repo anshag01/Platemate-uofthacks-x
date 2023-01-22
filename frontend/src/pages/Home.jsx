@@ -1,6 +1,5 @@
 import { useContext, useState } from 'react';
 import Container from '../components/ui/Container';
-import Header from '../components/ui/Header';
 import Map from '../components/Map';
 import { useEffect } from 'react';
 import Autocomplete from 'react-google-autocomplete';
@@ -10,6 +9,7 @@ import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import person1 from '../assets/pics/person1.png';
 import Card from '../components/ui/Card';
+import { useNavigate } from 'react-router-dom';
 
 const delay = 3000;
 
@@ -57,17 +57,26 @@ const waitForMatch = async (callback, userId, locationId) => {
     });
 };
 
+const images = [
+    'https://media.blogto.com/articles/20211011-Siennas-12.jpg?w=2048&cmd=resize_then_crop&height=1365&quality=70',
+    'https://c.ndtvimg.com/2021-04/1h7poqq_pasta_625x300_01_April_21.jpg?im=FaceCrop,algorithm=dnn,width=1200,height=886',
+    'https://www.eatthis.com/wp-content/uploads/sites/4/2022/06/fast-food-assortment-soda.jpg?quality=82&strip=1',
+    'https://vegnews.com/media/W1siZiIsIjI5NDQ2L1ZlZ05ld3MuVmVnYW5GYXN0Rm9vZC5Nb250eXNHb29kQnVyZ2VyLmpwZyJdLFsicCIsInRodW1iIiwiMTYwMHg5NDYjIix7ImZvcm1hdCI6ImpwZyJ9XSxbInAiLCJvcHRpbWl6ZSJdXQ/VegNews.VeganFastFood.MontysGoodBurger.jpg?sha=892e9c726614c0f8',
+    'https://www.eatwell101.com/wp-content/uploads/2022/01/Vegetable-Soup-recipe-2.jpg'
+];
+
 const Home = () => {
     const [placeholder, setPlaceholder] = useState('');
     const [center, setCenter] = useState(null);
     const [restaurantList, setRestaurantList] = useState(null);
+    const navigate = useNavigate();
 
     const [restaurants, setRestaurants] = useState([
         {
             id: 0,
             name: 'Fairmont Royal York',
             distance: 0.97,
-            price: 15.99,
+            price: '$',
             address: '100 Front Street West, Toronto',
             image: 'https://media.blogto.com/articles/20211011-Siennas-12.jpg?w=2048&cmd=resize_then_crop&height=1365&quality=70'
         },
@@ -91,7 +100,7 @@ const Home = () => {
             id: 3,
             name: 'The Keg Steakhouse + Bar - York Street',
             distance: 0.97,
-            price: 15.99,
+            price: '$$$',
             address: '100 Front Street West, Toronto',
             image: 'https://vegnews.com/media/W1siZiIsIjI5NDQ2L1ZlZ05ld3MuVmVnYW5GYXN0Rm9vZC5Nb250eXNHb29kQnVyZ2VyLmpwZyJdLFsicCIsInRodW1iIiwiMTYwMHg5NDYjIix7ImZvcm1hdCI6ImpwZyJ9XSxbInAiLCJvcHRpbWl6ZSJdXQ/VegNews.VeganFastFood.MontysGoodBurger.jpg?sha=892e9c726614c0f8'
         },
@@ -124,19 +133,12 @@ const Home = () => {
         });
     }, []);
 
-    const [match, setMatch] = useState();
-    const [match, setMatch] = useState();
+    const [match, setMatch] = useState(<></>);
 
     const handlePlaceSelected = async (place) => {
         const lat = place.geometry.location.lat();
         const lng = place.geometry.location.lng();
         const locationId = place.place_id;
-
-        const redirect = (url) => {
-            return () => {
-                window.location.href = url;
-            };
-        };
 
         const res = await getRestaurantList({ lat, lng });
         setRestaurantList(res);
@@ -146,23 +148,21 @@ const Home = () => {
 
         await waitForMatch(
             async (matchingUser) => {
-                const explainMatch = await axios.post(
-                    'http://localhost:4000/explainMatch',
-                    {
-                        userId: user,
-                        matchId: matchingUser
-                    }
-                );
-
+                // const explainMatch = await axios.post(
+                //     'http://localhost:4000/explainMatch',
+                //     {
+                //         userId: user,
+                //         matchId: matchingUser
+                //     }
+                // );
                 setMatch(
                     <Card
                         pic={person1}
                         title={matchingUser}
                         address="kazi Deiry, Taiger Pass Chittagong"
                         text="Match"
-                        onclick={redirect(
-                            `http://localhost:4000/match?userId=${user}&matchId=${matchingUser}`
-                        )}
+                        className="absolute top-[60%]"
+                        onClick={() => navigate('/match')}
                     />
                 );
                 console.log('matched with user: ', matchingUser);
@@ -186,19 +186,20 @@ const Home = () => {
                 }}
                 defaultValue={placeholder}
             />
+            {match}
+
             {restaurants.map((restaurant, index) => (
                 <RestaurantCard
                     key={index}
                     setRestaurants={setRestaurants}
                     address={restaurant.address}
-                    price={(Math.random() * 10).toFixed(2)}
+                    price={restaurant.price}
                     distance={(Math.random() * 10).toFixed(2)}
                     rating={restaurant.rating}
                     title={restaurant.name}
-                    image={restaurant.image}
+                    image={images[index]}
                 />
             ))}
-            {match}
         </Container>
     );
 };

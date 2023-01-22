@@ -10,6 +10,8 @@ const Match = () => {
     const userId = searchParams.get('userId');
     const matchId = searchParams.get('matchId');
 
+    console.log(userId, matchId);
+
     const [explanation, setExplanation] = useState('');
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -34,6 +36,7 @@ const Match = () => {
                 address="person2 interestes or job"
                 text="Chat"
             />
+
             <p>{explanation}</p>
         </Container>
     );

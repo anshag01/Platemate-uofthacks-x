@@ -24,7 +24,7 @@ const AuthContextProvider = (props) => {
             };
 
             const res = await axios.post(
-                'http://localhost:8000/login',
+                'http://localhost:4000/login',
                 context
             );
             if (res.status === 200) {
@@ -52,7 +52,7 @@ const AuthContextProvider = (props) => {
     const signup = async (context) => {
         try {
             const res = await axios.post(
-                'http://localhost:8000/signup/',
+                'http://localhost:4000/signup/',
                 context
             );
             if (res.status === 200) {
