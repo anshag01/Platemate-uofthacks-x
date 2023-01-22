@@ -2,6 +2,7 @@ import Container from "../components/ui/Container"
 import Header from "../components/ui/Header"
 import Button from "../components/ui/Button"
 import Input from "../components/ui/Input"
+import Logo from "../components/ui/Logo"
 import { Link, useNavigate } from "react-router-dom"
 
 const Signup = () => {
@@ -20,8 +21,8 @@ const Signup = () => {
 
   return (
     <Container>
-      <form className="flex flex-col gap-y-8" onSubmit={handleSubmit}>
-        <Header text="Sign Up" />
+      <form className="flex flex-col items-center gap-y-8" onSubmit={handleSubmit}>
+      <Logo />
 
         {/* Form */}
         {/* <Input placeholder="Email" name="email" type="email" required /> */}
