@@ -83,7 +83,13 @@ const Home = () => {
         console.log('user', user);
     }, []);
 
-    const [match, setMatch] = useState(<></>);
+    const [match, setMatch] = useState(
+        <Card
+            pic={person1}
+            title="Amy Roberts"
+            address="kazi Deiry, Taiger Pass Chittagong"
+        />
+    );
 
     const handlePlaceSelected = async (place) => {
         console.log('selected place: ', place);
@@ -95,7 +101,7 @@ const Home = () => {
                     <Card
                         className="bg-white"
                         pic={person1}
-                        title="Amy Roberts"
+                        title={matchingUser}
                         address="kazi Deiry, Taiger Pass Chittagong"
                     />
                 );
