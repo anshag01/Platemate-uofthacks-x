@@ -43,7 +43,7 @@ const Home = () => {
     };
 
     return (
-        <Container className="flex flex-col gap-y-8">
+        <Container className="flex flex-col items-center gap-y-8">
             <Header text="Where To?" />
             <Map center={center} />
             <Autocomplete
@@ -57,7 +57,15 @@ const Home = () => {
                 }}
                 defaultValue={placeholder}
             />
-            <RestaurantCard />
+            <RestaurantCard
+                address="1234 Main St"
+                description="lorem ipsum lurem ipsum."
+                price={3.8}
+                distance={2.34}
+                rating={3}
+                title="Restaurant Name"
+                image="https://lh5.googleusercontent.com/p/AF1QipPPNDBnnm4apN_JBNDGq-C4RB8WPzj84PNXK4ca=w228-h228-n-k-no"
+            />
         </Container>
     );
 };
