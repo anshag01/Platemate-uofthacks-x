@@ -82,6 +82,12 @@ app.get('/getPlaceDetails', (req, res, next) => {
         .catch((err) => next(err));
 });
 
+app.post('/getPlacePhoto', (req, res, next) => {
+    axios.get(`https://maps.googleapis.com/maps/api/place/photo?&photo_reference=${req.body.photos[0].photo_reference}&maxheight=200&key=${process.env.GOOGLE_MAPS_API_KEY}`)
+        .then((photo) => res.send(photo))
+        .catch((err) => next(err));
+});
+
 // COHERE
 
 app.post('/signup', async (req, res, next) => {
@@ -114,16 +120,6 @@ app.post('/login', async (req, res, next) => {
     }
 });
 
-app.post('/getUserData', async (req, res, next) => {
-    const docRef = doc(db, 'users', req.body.username);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-        res.send(docSnap.data());
-    } else {
-        console.log('User not found.');
-    }
-});
-
 app.post('/explainMatch', async (req, res, next) => {
     const user = await getUserInfo(db, req.body.userId);
     const match = await getUserInfo(db, req.body.matchId);
@@ -148,6 +144,18 @@ app.post('/explainMatch', async (req, res, next) => {
         )
         .then((result) => res.send(result))
         .catch((err) => next(err));
+});
+
+// FIREBASE
+
+app.post('/getUserData', async (req, res, next) => {
+    const docRef = doc(db, 'users', req.body.username);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+        res.send(docSnap.data());
+    } else {
+        console.log('User not found.');
+    }
 });
 
 app.post('/match', matchHandler);
