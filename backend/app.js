@@ -63,7 +63,7 @@ app.get('/getPlaceDetails', (req, res, next) => {
 
 app.post('/signup', async (req, res, next) => {
     const cohereResult = cohereKeywordExtractor.extract(req.body.bio);
-    const docRef = await addDoc(collection(db, 'users', req.body.username), {
+    const docRef = await setDoc(doc(db, 'users', req.body.username), {
         password: req.body.password,
         name: cohereResult.data.name,
         budget: req.body.budget + req.body.goal,
@@ -116,8 +116,8 @@ app.post('/explainMatch', async (req, res, next) => {
         .catch((err) => next(err));
 });
 
-app.listen(8000, () => {
-    console.log('Server running on port 8000');
+app.listen(3000, () => {
+    console.log('Server running on port 3000');
 });
 
 module.exports = app;
