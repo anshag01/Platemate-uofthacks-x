@@ -5,6 +5,7 @@ var doc = require('firebase/firestore').doc;
 var addDoc = require('firebase/firestore').addDoc;
 var getDoc = require('firebase/firestore').getDoc;
 var doc = require('firebase/firestore').doc;
+var setDoc = require('firebase/firestore').setDoc;
 
 var express = require('express');
 var cors = require('cors');
@@ -62,17 +63,18 @@ app.get('/getPlaceDetails', (req, res, next) => {
 // COHERE
 
 app.post('/signup', async (req, res, next) => {
-    const cohereResult = cohereKeywordExtractor.extract(req.body.bio);
+    const cohereResult = await cohereKeywordExtractor.extract(req.body.bio);
+    const cohereJson = JSON.parse(cohereResult);
     const docRef = await setDoc(doc(db, 'users', req.body.username), {
         password: req.body.password,
-        name: cohereResult.data.name,
+        name: cohereJson.name,
         budget: req.body.budget + req.body.goal,
-        cuisine: cohereResult.data.cuisine,
+        cuisine: cohereJson.cuisine,
         dietary_restrictions: req.body.dietary_restrictions,
-        interests: cohereResult.data.interests,
-        job: cohereResult.data.job
+        interests: cohereJson.interests,
+        job: cohereJson.job
     });
-    res.send(docRef.id);
+    res.send(req.body.username);
 });
 
 app.post('/login', async (req, res, next) => {
@@ -116,7 +118,7 @@ app.post('/explainMatch', async (req, res, next) => {
         .catch((err) => next(err));
 });
 
-app.listen(3000, () => {
+app.listen(8000, () => {
     console.log('Server running on port 3000');
 });
 
