@@ -83,7 +83,10 @@ app.get('/getPlaceDetails', (req, res, next) => {
 });
 
 app.post('/getPlacePhoto', (req, res, next) => {
-    axios.get(`https://maps.googleapis.com/maps/api/place/photo?&photo_reference=${req.body.photos[0].photo_reference}&maxheight=200&key=${process.env.GOOGLE_MAPS_API_KEY}`)
+    axios
+        .get(
+            `https://maps.googleapis.com/maps/api/place/photo?&photo_reference=${req.body.photos[0].photo_reference}&maxheight=200&key=${process.env.GOOGLE_MAPS_API_KEY}`
+        )
         .then((photo) => res.send(photo))
         .catch((err) => next(err));
 });

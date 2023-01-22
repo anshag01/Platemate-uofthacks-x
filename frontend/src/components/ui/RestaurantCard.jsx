@@ -9,18 +9,28 @@ const RestaurantCard = ({
     title,
     image,
     address,
-    description,
     price,
     distance,
-    rating
+    rating,
+    setRestaurants
 }) => {
+    const remove = () => {
+        setRestaurants((current) => current.slice(1));
+    };
+
     return (
-        <Container className="relative max-w-[90%] border shadow-lg bg-white rounded-lg p-[15px]">
+        <Container className="absolute top-[35%] -translate-y-1/2 h-[300px] max-w-[80%] border shadow-lg bg-white rounded-lg p-[15px]">
             {/* Arrows */}
-            <div className="absolute top-1/2 -translate-y-1/2 left-0 w-8 h-8 p-6 rounded-full bg-slate-300 cursor-pointer flex items-center justify-center">
+            <div
+                onClick={remove}
+                className="absolute top-1/2 -translate-y-1/2 left-0 w-8 h-8 p-6 rounded-full bg-slate-300 cursor-pointer flex items-center justify-center"
+            >
                 {'<'}
             </div>
-            <div className="absolute top-1/2 -translate-y-1/2 right-0 w-8 h-8 p-6 rounded-full bg-slate-300 cursor-pointer flex items-center justify-center">
+            <div
+                onClick={remove}
+                className="absolute top-1/2 -translate-y-1/2 right-0 w-8 h-8 p-6 rounded-full bg-slate-300 cursor-pointer flex items-center justify-center"
+            >
                 {'>'}
             </div>
 
@@ -48,7 +58,6 @@ const RestaurantCard = ({
                 <div className="">{address}</div>
                 <div className="text-2xl ml-6 text-red-500">${price}</div>
             </div>
-            <h3 className="max-w-[330px]">{description}</h3>
         </Container>
     );
 };

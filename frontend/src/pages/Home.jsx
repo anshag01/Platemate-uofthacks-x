@@ -62,6 +62,49 @@ const Home = () => {
     const [center, setCenter] = useState(null);
     const [restaurantList, setRestaurantList] = useState(null);
 
+    const [restaurants, setRestaurants] = useState([
+        {
+            id: 0,
+            name: 'Fairmont Royal York',
+            distance: 0.97,
+            price: 15.99,
+            address: '100 Front Street West, Toronto',
+            image: 'https://media.blogto.com/articles/20211011-Siennas-12.jpg?w=2048&cmd=resize_then_crop&height=1365&quality=70'
+        },
+        {
+            id: 1,
+            name: 'Oliver & Bonacini Café Grill, Yonge & Front',
+            distance: 8.69,
+            price: '$$',
+            address: '33 Yonge Street, Toronto',
+            image: 'https://c.ndtvimg.com/2021-04/1h7poqq_pasta_625x300_01_April_21.jpg?im=FaceCrop,algorithm=dnn,width=1200,height=886'
+        },
+        {
+            id: 2,
+            name: 'Terroni',
+            distance: 7.96,
+            price: '$$$',
+            address: '57 Adelaide Street East, Toronto',
+            image: 'https://www.eatthis.com/wp-content/uploads/sites/4/2022/06/fast-food-assortment-soda.jpg?quality=82&strip=1'
+        },
+        {
+            id: 3,
+            name: 'The Keg Steakhouse + Bar - York Street',
+            distance: 0.97,
+            price: 15.99,
+            address: '100 Front Street West, Toronto',
+            image: 'https://vegnews.com/media/W1siZiIsIjI5NDQ2L1ZlZ05ld3MuVmVnYW5GYXN0Rm9vZC5Nb250eXNHb29kQnVyZ2VyLmpwZyJdLFsicCIsInRodW1iIiwiMTYwMHg5NDYjIix7ImZvcm1hdCI6ImpwZyJ9XSxbInAiLCJvcHRpbWl6ZSJdXQ/VegNews.VeganFastFood.MontysGoodBurger.jpg?sha=892e9c726614c0f8'
+        },
+        {
+            id: 4,
+            name: 'Jump Restaurant',
+            distance: 0.78,
+            price: '$',
+            address: '18 Wellington Street West, Toronto',
+            image: 'https://www.eatwell101.com/wp-content/uploads/2022/01/Vegetable-Soup-recipe-2.jpg'
+        }
+    ]);
+
     const { user } = useContext(AuthContext);
     // useEffect(() => {
     //     return async () => {
@@ -81,18 +124,19 @@ const Home = () => {
         });
     }, []);
 
-    const [match, setMatch] = useState(
-        <Card
-            pic={person1}
-            title={user}
-            address="kazi Deiry, Taiger Pass Chittagong"
-        />
-    );
+    const [match, setMatch] = useState();
 
     const handlePlaceSelected = async (place) => {
-        console.log('selected place: ', place);
-        const { lat, lng } = place.geometry.location;
+        const lat = place.geometry.location.lat();
+        const lng = place.geometry.location.lng();
         const locationId = place.place_id;
+
+        const res = await getRestaurantList({ lat, lng });
+        setRestaurantList(res);
+        // display the resataurant list gievn the components
+
+        setCenter(place.geometry.location);
+
         await waitForMatch(
             (matchingUser) => {
                 setMatch(
@@ -107,16 +151,10 @@ const Home = () => {
             user,
             locationId
         );
-
-        const res = await getRestaurantList({ lat, lng });
-        setRestaurantList(res);
-        // display the resataurant list gievn the components
-
-        setCenter(place.geometry.location);
     };
 
     return (
-        <Container className="flex flex-col items-center gap-y-8">
+        <Container className="overflow-y-auto flex flex-col items-center gap-y-8">
             <Map center={center} />
             <Autocomplete
                 apiKey={'AIzaSyBafwgKGnLCerwKxmHSlVRrQRbiSq4HM1s'}
@@ -129,34 +167,18 @@ const Home = () => {
                 }}
                 defaultValue={placeholder}
             />
-            {/* <RestaurantCard
-                address="1234 Main St"
-                description="lorem ipsum lurem ipsum."
-                price={3.8}
-                distance={2.34}
-                rating={3}
-                title="Restaurant Name"
-                image="https://lh5.googleusercontent.com/p/AF1QipPPNDBnnm4apN_JBNDGq-C4RB8WPzj84PNXK4ca=w228-h228-n-k-no"
-            /> */}
-            {restaurantList &&
-                restaurantList.map(async (restaurant, index) => {
-                    const img = await axios.post(
-                        'http://localhost:4000/getPlacePhoto',
-                        { photoReference: restaurant.photos[0].photo_reference }
-                    );
-                    return (
-                        <RestaurantCard
-                            key={index}
-                            address={restaurant.address}
-                            description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-                            price={(Math.random() * 10).toFixed(2)}
-                            distance={(Math.random() * 10).toFixed(2)}
-                            rating={restaurant.rating}
-                            title={restaurant.name}
-                            image={img}
-                        />
-                    );
-                })}
+            {restaurants.map((restaurant, index) => (
+                <RestaurantCard
+                    key={index}
+                    setRestaurants={setRestaurants}
+                    address={restaurant.address}
+                    price={(Math.random() * 10).toFixed(2)}
+                    distance={(Math.random() * 10).toFixed(2)}
+                    rating={restaurant.rating}
+                    title={restaurant.name}
+                    image={restaurant.image}
+                />
+            ))}
             {match}
         </Container>
     );

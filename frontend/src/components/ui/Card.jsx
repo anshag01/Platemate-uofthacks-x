@@ -14,7 +14,7 @@ const Card = (props) => {
                 <h1 className="font-bold text-xl">{props.title}</h1>
                 <h1>{props.address}</h1>
             </div>
-            <Button text="Check" />
+            <Button text={props.text || 'View'} />
         </div>
     );
 };
