@@ -43,7 +43,11 @@ const Signup = () => {
 
                 <div className="flex items-center gap-x-4">
                     <Button text="Sign Up" type="submit" />
-                    <Button text="Log In" type="text" />
+                    <Button
+                        text="Log In"
+                        type="text"
+                        onClick={() => navigate('/login')}
+                    />
                 </div>
                 <Link className="text-[#DF72E1] hover:text-[#a04ea2] hover:ease-in-out duration-100 text-center">
                     Forgot your password?

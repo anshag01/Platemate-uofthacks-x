@@ -14,10 +14,9 @@ import Card from '../components/ui/Card';
 const delay = 3000;
 
 const getRestaurantList = async ({ lat, lng }) => {
-    console.log(lat, lng);
     const response = await axios.post(
         'http://localhost:4000/findNearbyRestaurants',
-        { lat: lat(), lng: lng() }
+        { lat, lng }
     );
 
     return response.data;
@@ -61,6 +60,7 @@ const waitForMatch = async (callback, userId, locationId) => {
 const Home = () => {
     const [placeholder, setPlaceholder] = useState('');
     const [center, setCenter] = useState(null);
+    const [restaurantList, setRestaurantList] = useState(null);
 
     const { user } = useContext(AuthContext);
     // useEffect(() => {
@@ -79,14 +79,12 @@ const Home = () => {
             setPlaceholder(formattedAddress);
             setCenter({ lat: latitude, lng: longitude });
         });
-
-        console.log('user', user);
     }, []);
 
     const [match, setMatch] = useState(
         <Card
             pic={person1}
-            title="Amy Roberts"
+            title={user}
             address="kazi Deiry, Taiger Pass Chittagong"
         />
     );
@@ -99,7 +97,6 @@ const Home = () => {
             (matchingUser) => {
                 setMatch(
                     <Card
-                        className="bg-white"
                         pic={person1}
                         title={matchingUser}
                         address="kazi Deiry, Taiger Pass Chittagong"
@@ -111,7 +108,8 @@ const Home = () => {
             locationId
         );
 
-        const restaurantList = await getRestaurantList({ lat, lng });
+        const res = await getRestaurantList({ lat, lng });
+        setRestaurantList(res);
         // display the resataurant list gievn the components
 
         setCenter(place.geometry.location);
@@ -131,7 +129,7 @@ const Home = () => {
                 }}
                 defaultValue={placeholder}
             />
-            <RestaurantCard
+            {/* <RestaurantCard
                 address="1234 Main St"
                 description="lorem ipsum lurem ipsum."
                 price={3.8}
@@ -139,7 +137,26 @@ const Home = () => {
                 rating={3}
                 title="Restaurant Name"
                 image="https://lh5.googleusercontent.com/p/AF1QipPPNDBnnm4apN_JBNDGq-C4RB8WPzj84PNXK4ca=w228-h228-n-k-no"
-            />
+            /> */}
+            {restaurantList &&
+                restaurantList.map(async (restaurant, index) => {
+                    const img = await axios.post(
+                        'http://localhost:4000/getPlacePhoto',
+                        { photoReference: restaurant.photos[0].photo_reference }
+                    );
+                    return (
+                        <RestaurantCard
+                            key={index}
+                            address={restaurant.address}
+                            description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                            price={(Math.random() * 10).toFixed(2)}
+                            distance={(Math.random() * 10).toFixed(2)}
+                            rating={restaurant.rating}
+                            title={restaurant.name}
+                            image={img}
+                        />
+                    );
+                })}
             {match}
         </Container>
     );
