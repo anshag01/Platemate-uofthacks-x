@@ -38,7 +38,7 @@ const CohereExplainer = require('./cohereExplainer.js');
 const cohereKeywordExtractor = new CohereExtractor();
 const cohereMatchExplainer = new CohereExplainer();
 const getUserInfo = require('./getUserInfo.js');
-const matchHandler = require('./utils/matchHandler.js');
+const { matchHandler } = require('./utils/matchHandler.js');
 
 // GOOGLE MAPS
 

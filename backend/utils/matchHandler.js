@@ -90,3 +90,7 @@ const launchMatchmaking = (userId, locationId) => {
         setInterval(() => {}, delay);
     });
 };
+
+module.exports = {
+    matchHandler
+};

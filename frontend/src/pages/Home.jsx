@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import Container from '../components/ui/Container';
 import Header from '../components/ui/Header';
 import Map from '../components/Map';
@@ -7,6 +7,8 @@ import Autocomplete from 'react-google-autocomplete';
 import { reverseGeocode } from '../utils/reverseGeocode';
 import RestaurantCard from '../components/ui/RestaurantCard';
 import axios from 'axios';
+import { waitForMatch } from '../utils/waitForMatch';
+import { AuthContext } from '../context/AuthContext';
 
 const getRestaurantList = async ({ lat, lng }) => {
     console.log(lat, lng);
@@ -22,6 +24,8 @@ const Home = () => {
     const [placeholder, setPlaceholder] = useState('');
     const [center, setCenter] = useState(null);
 
+    const { user } = useContext(AuthContext);
+
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(async (position) => {
             const { longitude, latitude } = position.coords;
@@ -29,12 +33,17 @@ const Home = () => {
             setPlaceholder(formattedAddress);
             setCenter({ lat: latitude, lng: longitude });
         });
+
+        console.log('user', user);
     }, []);
+
+    const [match, setMatch] = useState(null);
 
     const handlePlaceSelected = async (place) => {
         console.log('selected place: ', place.geometry.location);
         const { lat, lng } = place.geometry.location;
         // start the matchmaking process
+        waitForMatch();
 
         const restaurantList = await getRestaurantList({ lat, lng });
         // display the resataurant list gievn the components
