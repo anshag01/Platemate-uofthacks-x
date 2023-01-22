@@ -117,6 +117,16 @@ app.post('/login', async (req, res, next) => {
     }
 });
 
+app.post('/getUserData', async (req, res, next) => {
+    const docRef = doc(db, 'users', req.body.username);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+        res.send(docSnap.data());
+    } else {
+        console.log('User not found.');
+    }
+});
+
 app.post('/explainMatch', async (req, res, next) => {
     const user = await getUserInfo(db, req.body.userId);
     const match = await getUserInfo(db, req.body.matchId);
