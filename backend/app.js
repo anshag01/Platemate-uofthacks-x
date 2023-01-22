@@ -38,6 +38,7 @@ const CohereExplainer = require('./cohereExplainer.js');
 const cohereKeywordExtractor = new CohereExtractor();
 const cohereMatchExplainer = new CohereExplainer();
 const getUserInfo = require('./getUserInfo.js');
+const matchHandler = require('./utils/matchHandler.js');
 
 // GOOGLE MAPS
 
@@ -141,6 +142,8 @@ app.post('/explainMatch', async (req, res, next) => {
         .then((result) => res.send(result))
         .catch((err) => next(err));
 });
+
+app.post('/match', matchHandler);
 
 app.listen(4000, () => {
     console.log('Server running on port 4000');

@@ -11,7 +11,7 @@ import axios from 'axios';
 const getRestaurantList = async ({ lat, lng }) => {
     console.log(lat, lng);
     const response = await axios.post(
-        'http://localhost:3001/findNearbyRestaurants',
+        'http://localhost:4000/findNearbyRestaurants',
         { lat: lat(), lng: lng() }
     );
 
