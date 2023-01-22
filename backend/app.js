@@ -34,6 +34,7 @@ const CohereExplainer = require('../cohereExplainer.js');
 
 const cohereKeywordExtractor = new CohereExtractor();
 const cohereMatchExplainer = new CohereExplainer();
+const getUserInfo = require('./src/utils/getUserInfo.js');
 
 // GOOGLE MAPS
 
@@ -80,7 +81,7 @@ app.post('/signUp', async (req, res, next) => {
 });
 
 app.get('/logIn', async (req, res, next) => {
-    const docRef = doc(db, 'users', req.body.username);
+    const docRef = doc(db, 'users', req.body.id);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
         if (req.body.password === docSnap.data().password) {
@@ -99,6 +100,20 @@ app.get('/logIn', async (req, res, next) => {
 //   return data;
 // }
 
+app.get('/logIn', async (req, res, next) => {
+    const docRef = doc(db, 'users', req.body.username);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+        if (req.body.password === docSnap.data().password) {
+            res.send(docRef.id);
+        } else {
+            console.log('Incorrect password.');
+        }
+    } else {
+        console.log('No such document!');
+    }
+});
+
 app.post('/explainMatch', (req, res, next) => {
     const { userJob, userInterest } = getUserInfo(req.body.userUuid);
     const { matchJob, matchInterest } = getUserInfo(req.body.matchUuid);
@@ -108,5 +123,10 @@ app.post('/explainMatch', (req, res, next) => {
         .then((result) => console.log(result))
         .catch((err) => next(err));
 });
+
+app.listen(8000, () => {
+    console.log('Server running on port 8000');
+});
+
 
 module.exports = app;
