@@ -1,13 +1,14 @@
 import Container from '../components/ui/Container';
 import Header from '../components/ui/Header';
 import Button from '../components/ui/Button';
-import { useState } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
+import { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 
 const UserInfo = () => {
-    const [valid, setValid] = useState(false);
     const location = useLocation();
+    const { signup } = useContext(AuthContext);
 
     const { username, password } = location.state;
 
@@ -25,31 +26,31 @@ const UserInfo = () => {
 
         if (budget === '1' && goal === 'lower') {
             console.log('budget is already at the lowest.');
-            setValid(false);
             return;
         } else if (budget === '4' && goal === 'higher') {
             console.log('budget is already at the highest.');
-            setValid(false);
             return;
         }
 
-        const context = {
-            bio,
-            username,
-            password,
-            budget,
-            goal,
-            dietaryRestrictions: [
-                e.target[1].checked,
-                e.target[2].checked,
-                e.target[3].checked,
-                e.target[4].checked,
-                e.target[5].checked,
-                e.target[6].checked,
-                e.target[7].checked
-            ]
-        };
-        await axios.post('http://locahost:8000/signup/', context);
+        if (bio !== '' && budget !== '' && goal !== '') {
+            const context = {
+                bio,
+                username,
+                password,
+                budget: parseInt(budget),
+                goal: parseInt(goal),
+                dietary_restrictions: [
+                    e.target[1].checked,
+                    e.target[2].checked,
+                    e.target[3].checked,
+                    e.target[4].checked,
+                    e.target[5].checked,
+                    e.target[6].checked,
+                    e.target[7].checked
+                ]
+            };
+            signup(context);
+        }
     };
 
     return (
@@ -115,10 +116,8 @@ const UserInfo = () => {
                         <option value="1">$</option>
                         <option value="2">$$</option>
                         <option value="3">$$$</option>
-                        <option value="4">$$$$</option>
                     </select>
                 </div>
-
                 <div>
                     <h1>Spend more or less goals.*</h1>
                     <select
@@ -127,17 +126,13 @@ const UserInfo = () => {
                         className="block appearance-none w-full bg-white border border-gray-400 hover:border-[#DF72E1] px-4 py-2 pr-8 rounded-lg focus:outline-none focus:border-blue-500"
                     >
                         <option value="">Select your budget goals</option>
-                        <option value="1">higher</option>
-                        <option value="0">same</option>
                         <option value="-1">lower</option>
+                        <option value="0">same</option>
+                        <option value="1">higher</option>
                     </select>
                 </div>
 
-                <Button
-                    text="Submit"
-                    type="submit"
-                    className={valid ? 'cursor-default' : 'cursor-not-allowed'}
-                />
+                <Button text="Submit" type="submit" className="" />
             </form>
         </Container>
     );

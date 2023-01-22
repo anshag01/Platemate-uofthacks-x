@@ -45,12 +45,8 @@ const AuthContextProvider = (props) => {
     };
 
     // Sign up
-    const signup = async (username, password) => {
+    const signup = async (context) => {
         try {
-            const context = {
-                username,
-                password
-            };
             const res = await axios.post(
                 'http://localhost:8000/signup/',
                 context
