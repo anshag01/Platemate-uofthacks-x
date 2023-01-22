@@ -81,18 +81,19 @@ const Home = () => {
         });
     }, []);
 
-    const [match, setMatch] = useState(
-        <Card
-            pic={person1}
-            title={user}
-            address="kazi Deiry, Taiger Pass Chittagong"
-        />
-    );
+    const [match, setMatch] = useState();
 
     const handlePlaceSelected = async (place) => {
         console.log('selected place: ', place);
         const { lat, lng } = place.geometry.location;
         const locationId = place.place_id;
+
+        const redirect = (url) => {
+            return () => {
+                window.location.href = url;
+            };
+        };
+
         await waitForMatch(
             async (matchingUser) => {
                 const explainMatch = await axios.post(
@@ -108,6 +109,10 @@ const Home = () => {
                         pic={person1}
                         title={matchingUser}
                         address="kazi Deiry, Taiger Pass Chittagong"
+                        text="Match"
+                        onclick={redirect(
+                            `http://localhost:4000/match?userId=${user}&matchId=${matchingUser}`
+                        )}
                     />
                 );
                 console.log('matched with user: ', matchingUser);
