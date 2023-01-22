@@ -5,4 +5,3 @@ async function getUserInfo(db, id) {
     return docSnap.data();
   }
 };
-
