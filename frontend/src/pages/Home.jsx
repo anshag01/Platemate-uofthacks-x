@@ -8,6 +8,8 @@ import { reverseGeocode } from '../utils/reverseGeocode';
 import RestaurantCard from '../components/ui/RestaurantCard';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
+import person1 from '../assets/pics/person1.png';
+import Card from '../components/ui/Card';
 
 const delay = 3000;
 
@@ -61,13 +63,14 @@ const Home = () => {
     const [center, setCenter] = useState(null);
 
     const { user } = useContext(AuthContext);
-    useEffect(() => {
-        return async () => {
-            await axios.post('http://localhost:4000/match', {
-                status: 'stop'
-            });
-        };
-    });
+    // useEffect(() => {
+    //     return async () => {
+    //         await axios.post('http://localhost:4000/match', {
+    //             status: 'stop',
+    //             userId: user
+    //         });
+    //     };
+    // });
 
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(async (position) => {
@@ -80,13 +83,27 @@ const Home = () => {
         console.log('user', user);
     }, []);
 
-    const [match, setMatch] = useState(null);
+    const [match, setMatch] = useState(<></>);
 
     const handlePlaceSelected = async (place) => {
         console.log('selected place: ', place);
         const { lat, lng } = place.geometry.location;
         const locationId = place.place_id;
-        await waitForMatch(() => {}, user, locationId);
+        await waitForMatch(
+            (matchingUser) => {
+                setMatch(
+                    <Card
+                        className="bg-white"
+                        pic={person1}
+                        title="Amy Roberts"
+                        address="kazi Deiry, Taiger Pass Chittagong"
+                    />
+                );
+                console.log('matched with user: ', matchingUser);
+            },
+            user,
+            locationId
+        );
 
         const restaurantList = await getRestaurantList({ lat, lng });
         // display the resataurant list gievn the components
@@ -96,7 +113,6 @@ const Home = () => {
 
     return (
         <Container className="flex flex-col items-center gap-y-8">
-            <Header text="Where To?" />
             <Map center={center} />
             <Autocomplete
                 apiKey={'AIzaSyBafwgKGnLCerwKxmHSlVRrQRbiSq4HM1s'}
@@ -118,6 +134,7 @@ const Home = () => {
                 title="Restaurant Name"
                 image="https://lh5.googleusercontent.com/p/AF1QipPPNDBnnm4apN_JBNDGq-C4RB8WPzj84PNXK4ca=w228-h228-n-k-no"
             />
+            {match}
         </Container>
     );
 };
