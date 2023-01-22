@@ -6,8 +6,6 @@ const delay = 5000;
  * @param {Response} res
  */
 const matchHandler = (req, res) => {
-    console.log('made it in the request');
-
     const { status, locationId, userId } = req.body;
 
     switch (status) {

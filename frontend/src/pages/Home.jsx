@@ -94,7 +94,15 @@ const Home = () => {
         const { lat, lng } = place.geometry.location;
         const locationId = place.place_id;
         await waitForMatch(
-            (matchingUser) => {
+            async (matchingUser) => {
+                const explainMatch = await axios.post(
+                    'http://localhost:4000/explainMatch',
+                    {
+                        userId: user,
+                        matchId: matchingUser
+                    }
+                );
+
                 setMatch(
                     <Card
                         pic={person1}

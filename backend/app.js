@@ -37,7 +37,7 @@ const CohereExplainer = require('./cohereExplainer.js');
 
 const cohereKeywordExtractor = new CohereExtractor();
 const cohereMatchExplainer = new CohereExplainer();
-const getUserInfo = require('./getUserInfo.js');
+const { getUserInfo } = require('./getUserInfo.js');
 const { matchHandler } = require('./utils/matchHandler.js');
 
 // GOOGLE MAPS
@@ -83,7 +83,10 @@ app.get('/getPlaceDetails', (req, res, next) => {
 });
 
 app.post('/getPlacePhoto', (req, res, next) => {
-    axios.get(`https://maps.googleapis.com/maps/api/place/photo?&photo_reference=${req.body.photos[0].photo_reference}&maxheight=200&key=${process.env.GOOGLE_MAPS_API_KEY}`)
+    axios
+        .get(
+            `https://maps.googleapis.com/maps/api/place/photo?&photo_reference=${req.body.photos[0].photo_reference}&maxheight=200&key=${process.env.GOOGLE_MAPS_API_KEY}`
+        )
         .then((photo) => res.send(photo))
         .catch((err) => next(err));
 });
@@ -123,18 +126,23 @@ app.post('/login', async (req, res, next) => {
 app.post('/explainMatch', async (req, res, next) => {
     const user = await getUserInfo(db, req.body.userId);
     const match = await getUserInfo(db, req.body.matchId);
-    const { userName, userCuisine, userInterests, userJob } = user.data;
-    const [userInterest1, userInterest2, userInterest3] = userInterests;
-    const { matchName, matchCuisine, matchInterests, matchJob } = match.data;
+    const { name, cuisine, interests, job } = user;
+    const [userInterest1, userInterest2, userInterest3] = interests;
+    const {
+        name: matchName,
+        cuisine: matchCuisine,
+        interests: matchInterests,
+        job: matchJob
+    } = match;
     const [matchInterest1, matchInterest2, matchInterest3] = matchInterests;
     cohereMatchExplainer
         .explain(
-            userName,
-            userCuisine,
+            name,
+            cuisine,
             userInterest1,
             userInterest2,
             userInterest3,
-            userJob,
+            job,
             matchName,
             matchCuisine,
             matchInterest1,
