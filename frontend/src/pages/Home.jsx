@@ -11,10 +11,9 @@ import { waitForMatch } from '../utils/waitForMatch';
 import { AuthContext } from '../context/AuthContext';
 
 const getRestaurantList = async ({ lat, lng }) => {
-    console.log(lat, lng);
     const response = await axios.post(
         'http://localhost:4000/findNearbyRestaurants',
-        { lat: lat(), lng: lng() }
+        { lat, lng }
     );
 
     return response.data;
@@ -33,19 +32,19 @@ const Home = () => {
             setPlaceholder(formattedAddress);
             setCenter({ lat: latitude, lng: longitude });
         });
-
-        console.log('user', user);
     }, []);
 
     const [match, setMatch] = useState(null);
+    const [restaurantList, setRestaurantList] = useState();
 
     const handlePlaceSelected = async (place) => {
-        console.log('selected place: ', place.geometry.location);
-        const { lat, lng } = place.geometry.location;
+        const lat = place.geometry.location.lat();
+        const lng = place.geometry.location.lng();
         // start the matchmaking process
         waitForMatch();
 
-        const restaurantList = await getRestaurantList({ lat, lng });
+        const res = await getRestaurantList({ lat, lng });
+        setRestaurantList(res);
         // display the resataurant list gievn the components
 
         setCenter(place.geometry.location);
@@ -75,6 +74,22 @@ const Home = () => {
                 title="Restaurant Name"
                 image="https://lh5.googleusercontent.com/p/AF1QipPPNDBnnm4apN_JBNDGq-C4RB8WPzj84PNXK4ca=w228-h228-n-k-no"
             />
+            {/* {restaurantList &&
+                restaurantList.map(
+                    (restaurant, index) =>
+                        console.log(restaurant) && (
+                            <RestaurantCard
+                                key={index}
+                                address={restaurant.address}
+                                description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                                price={(Math.random() * 10).toFixed(2)}
+                                distance={(Math.random() * 10).toFixed(2)}
+                                rating={restaurant.rating}
+                                title={restaurant.name}
+                                image="https://images.unsplash.com/photo-1616488000003-5e1b5e2b5b0f?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80"
+                            />
+                        )
+                )} */}
         </Container>
     );
 };
