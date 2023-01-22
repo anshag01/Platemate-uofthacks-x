@@ -84,9 +84,9 @@ app.post('/signup', async (req, res, next) => {
 app.post('/login', async (req, res, next) => {
     const docRef = doc(db, 'users', req.body.id);
     const docSnap = await getDoc(docRef);
-    console.log(docSnap);
     if (docSnap.exists()) {
         if (req.body.password === docSnap.data().password) {
+            console.log('WORKED', docRef.id);
             res.send(docRef.id);
         } else {
             console.log('Incorrect password.');

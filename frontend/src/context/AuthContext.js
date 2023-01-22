@@ -15,7 +15,7 @@ const AuthContextProvider = (props) => {
     const login = async (username, password) => {
         try {
             const context = {
-                id: username,
+                username,
                 password
             };
 
@@ -25,7 +25,6 @@ const AuthContextProvider = (props) => {
             );
             if (res.status === 200) {
                 const uuid = res.data;
-                console.log(uuid);
                 localStorage.setItem('user', JSON.stringify(uuid));
 
                 // Going home
@@ -41,7 +40,7 @@ const AuthContextProvider = (props) => {
         localStorage.removeItem('user');
 
         // Going home
-        navigate('/');
+        navigate('/login');
     };
 
     // Sign up
@@ -51,10 +50,17 @@ const AuthContextProvider = (props) => {
                 username,
                 password
             };
-            const res = await axios.post('/signup/', context);
+            const res = await axios.post(
+                'http://localhost:3000/signup/',
+                context
+            );
             if (res.status === 200) {
+                console.log(res.data);
+                localStorage.setItem('user', JSON.stringify(res.data));
+                setUser(res.data);
+
                 // Going home
-                navigate('/login');
+                navigate('/');
             }
         } catch (error) {
             console.log(error);
