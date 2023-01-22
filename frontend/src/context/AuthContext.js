@@ -9,7 +9,11 @@ const AuthContextProvider = (props) => {
     const navigate = useNavigate();
 
     // User authentication info
-    const [user, setUser] = useState();
+    const [user, setUser] = useState(() =>
+        localStorage.getItem('user')
+            ? JSON.parse(localStorage.getItem('user'))
+            : null
+    );
 
     // Login
     const login = async (username, password) => {
