@@ -26,16 +26,15 @@ const firebaseConfig = {
 };
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
-module.export = db;
-
+module.exports = { db };
 // COHERE CONFIG
 
-const CohereExtractor = require('../cohereExtractor.js');
-const CohereExplainer = require('../cohereExplainer.js');
+const CohereExtractor = require('./cohereExtractor.js');
+const CohereExplainer = require('./cohereExplainer.js');
 
 const cohereKeywordExtractor = new CohereExtractor();
 const cohereMatchExplainer = new CohereExplainer();
-const getUserInfo = require('./src/utils/getUserInfo.js');
+const getUserInfo = require('./getUserInfo.js');
 
 // GOOGLE MAPS
 
@@ -125,9 +124,8 @@ app.post('/explainMatch', (req, res, next) => {
         .catch((err) => next(err));
 });
 
-app.listen(8000, () => {
-    console.log('Server running on port 8000');
+app.listen(3000, () => {
+    console.log('Server running on port 3000');
 });
-
 
 module.exports = app;
